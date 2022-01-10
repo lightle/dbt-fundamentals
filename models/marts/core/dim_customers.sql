@@ -7,6 +7,7 @@ payments as (
         sum(amount) as amount
 
     from {{ ref('staging_payments') }}
+    where status = 'success'
     group by order_id 
 ),
 

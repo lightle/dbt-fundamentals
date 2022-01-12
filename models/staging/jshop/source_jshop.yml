@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: jshop
+    database: raw
+    schema: jshop
+    tables:
+      - name: customers
+      - name: orders

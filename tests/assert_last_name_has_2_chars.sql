@@ -1,0 +1,1 @@
+select * from {{ ref('staging_customers') }} having not (len(last_name) = 2)

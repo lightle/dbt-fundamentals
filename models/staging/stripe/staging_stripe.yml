@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: staging_payments
+    columns:
+      - name: status
+        tests:
+          - accepted_values:
+              values:
+                - success
+                - fail

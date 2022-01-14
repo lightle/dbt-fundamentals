@@ -7,6 +7,14 @@ with order_payment as (
     group by 1
 ),
 
+orders as (
+    select * from {{ ref('stg_orders') }}
+),
+
+customers as (
+    select * from {{ ref('stg_customers') }}
+),
+
 paid_orders as (
     select order_id,
         customer_id,
@@ -14,11 +22,12 @@ paid_orders as (
         order_status,
         total_amount_paid,
         payment_finalized_date,
-        C.FIRST_NAME    as customer_first_name,
-            C.LAST_NAME as customer_last_name
-    FROM {{ ref('stg_orders') }} as Orders
-left join order_payment ON order_id
-left join raw.jshop.customers C on orders.USER_ID = C.ID ),
+        customer_first_name,
+        customer_last_name
+    FROM orders
+left join order_payment using (order_id)
+left join customers using (customer_id)
+),
 
 customer_orders 
 as (select C.ID as customer_id

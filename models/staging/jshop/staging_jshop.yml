@@ -2,14 +2,18 @@ version: 2
 
 models:
   - name: staging_customers
+    description: staged customer data from jshop
     columns:
       - name: customer_id
+        description: unique id for each and every unique customer
         tests:
           - unique
           - not_null
   - name: staging_orders
+    description: staged orders from jshop, each customers may have more than 1 order but each order can only belong to 1 customer
     columns:
       - name: order_id
+        description: id of each order
         tests:
           - unique
           - not_null
@@ -17,6 +21,7 @@ models:
               to: ref('staging_payments')
               field: order_id
       - name: status
+        description: '{{ doc("od_status") }}'
         tests:
           - accepted_values:
               values:

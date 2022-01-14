@@ -1,23 +1,23 @@
 with order_payment as (
-    select ORDERID as order_id,
-        max(CREATED) as payment_finalized_date,
-        sum(AMOUNT) / 100.0 as total_amount_paid
-    from raw.stripe.payment
-    where STATUS <> 'fail'
+    select order_id,
+        max(payment_date) as payment_finalized_date,
+        sum(amount) / 100.0 as total_amount_paid
+    from {{ ref('stg_payment') }}
+    where payment_status <> 'fail'
     group by 1
-)
+),
 
 paid_orders as (
-    select Orders.order_id,
-        Orders.customer_id,
-        Orders.order_placed_at,
-        Orders.order_status,
-        p.total_amount_paid,
-        p.payment_finalized_date,
+    select order_id,
+        customer_id,
+        order_placed_at,
+        order_status,
+        total_amount_paid,
+        payment_finalized_date,
         C.FIRST_NAME    as customer_first_name,
             C.LAST_NAME as customer_last_name
-FROM {{ ref('stg_orders') }} as Orders
-left join  p ON orders.ID = p.order_id
+    FROM {{ ref('stg_orders') }} as Orders
+left join order_payment ON order_id
 left join raw.jshop.customers C on orders.USER_ID = C.ID ),
 
 customer_orders 
